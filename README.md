@@ -1,5 +1,5 @@
 
-MinerTransaction# NeoBlockchain2MongoDB
+# NeoBlockchain2MongoDB
 
 简介：
 
