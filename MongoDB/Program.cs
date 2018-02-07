@@ -10,6 +10,12 @@ namespace MongoDB
 {
     class Program
     {
+        /// <summary>
+        /// true:控制台显示详细信息
+        /// false:控制台显示精简信息
+        /// </summary>
+        static bool showDetails = false;
+
         static void Main(string[] args)
         {
             Console.WriteLine("正在初始化数据库");
@@ -69,6 +75,10 @@ namespace MongoDB
             }
         }
 
+        /// <summary>
+        /// 查询地址信息
+        /// </summary>
+        /// <param name="parameter">地址</param>
         private static void QueryAddress(string parameter)
         {
             var address = MongoDB<Address>.FirstOrDefault(p => p.Id == parameter);
@@ -83,9 +93,8 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// 同步模式
+        /// 同步区块
         /// </summary>
-        /// <param name="end">截止高度</param>
         static void Sync()
         {
             var blockCount = MongoDB<Block>.Count();
@@ -101,7 +110,10 @@ namespace MongoDB
                 Insert(i);
 #endif
                 //Console.Clear();
-                Console.WriteLine($"{i}/{end}");
+                if (showDetails)
+                {
+                    Console.WriteLine($"{i}/{end}");
+                }
                 while (end - i < 1)
                 {
                     Thread.Sleep(1000);
@@ -150,13 +162,21 @@ namespace MongoDB
                 json = Tools.GetBlock(index);
 
             var block = Block.FromJson(json);
-
+            if (!showDetails)
+            {
+                //开始记录区块
+                Console.Write($"Block {block.Index}");
+                var blockComplexity = 1;
+                block.Transactions.ForEach(p => blockComplexity += ((p as ClaimTransaction)?.Claims.Count * 2 ?? 0 + p.Inputs?.Count * 2 ?? 0 + p.Outputs?.Count * 2 ?? 0) + 1);
+                //区块复杂数（预计写入数据多少次）
+                Console.WriteLine($"/{blockComplexity}");
+            }
             try
             {
                 MongoDB<Block>.Insert(block);
-                //Console.WriteLine($"Block {block.Index} 已创建");
             }
             catch (Exception) { Console.WriteLine($"Block {index} 已存在"); }
+
             foreach (var tx in block.Transactions)
             {
                 //存储共识交易
@@ -237,7 +257,10 @@ namespace MongoDB
                         }
 
                         MongoDB<Coin>.UpdateItem(p => p.Id == claim.Id, p => p.CoinState, coin.CoinState | CoinState.Claimed);
-                        Console.WriteLine($"ClaimTransaction Coin {claim.Id} 已修改");
+                        if (showDetails)
+                        {
+                            Console.WriteLine($"ClaimTransaction Coin {claim.Id} 已修改");
+                        }
 
                         //修改地址的资产余额及交易记录
                         //在提取小蚁币的交易中，涉及的地址不只是在Inputs和Outputs中，还有Claims字段
@@ -251,8 +274,10 @@ namespace MongoDB
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.Coins, address.Append(coin));
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.Transactions, address.Append(tx));
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.LastTimeStamp, block.Timestamp);
-
-                            Console.WriteLine($"ClaimTransaction Address {address.Id} 已修改");
+                            if (showDetails)
+                            {
+                                Console.WriteLine($"ClaimTransaction Address {address.Id} 已修改");
+                            }
                         }
                     }
                 }
@@ -262,7 +287,10 @@ namespace MongoDB
                     try
                     {
                         MongoDB<Transaction>.Insert(tx);
-                        Console.WriteLine($"Transaction {tx.Hash} 已创建");
+                        if (showDetails)
+                        {
+                            Console.WriteLine($"Transaction {tx.Hash} 已创建");
+                        }
                     }
                     catch (Exception) { Console.WriteLine($"Transaction {tx.Hash} 已存在"); }
                 }
@@ -291,7 +319,10 @@ namespace MongoDB
                         try
                         {
                             MongoDB<Coin>.Insert(coin);
-                            Console.WriteLine($"Outputs Coin {coin.Id} 已创建");
+                            if (showDetails)
+                            {
+                                Console.WriteLine($"Outputs Coin {coin.Id} 已创建");
+                            }
                         }
                         catch (Exception) { Console.WriteLine($"Outputs Coin {coin.Id} 已存在"); }
                         var address = MongoDB<Address>.FirstOrDefault(p => p.Id == output.Address);
@@ -311,7 +342,10 @@ namespace MongoDB
                             try
                             {
                                 MongoDB<Address>.Insert(address);
-                                Console.WriteLine($"Outputs Address {output.Address} 已创建");
+                                if (showDetails)
+                                {
+                                    Console.WriteLine($"Outputs Address {output.Address} 已创建");
+                                }
                             }
                             catch (Exception) { Console.WriteLine($"Outputs Address {output.Address} 已存在"); }
                         }
@@ -321,7 +355,10 @@ namespace MongoDB
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.Coins, address.Append(coin));
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.Transactions, address.Append(tx));
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.LastTimeStamp, block.Timestamp);
-                            Console.WriteLine($"Outputs Address {output.Address} 已修改");
+                            if (showDetails)
+                            {
+                                Console.WriteLine($"Outputs Address {output.Address} 已修改");
+                            }
                         }
                     }
                 }
@@ -338,7 +375,10 @@ namespace MongoDB
                         }
                         MongoDB<Coin>.UpdateItem(p => p.Id == input.Id, p => p.CoinState, CoinState.Spent);
                         MongoDB<Coin>.UpdateItem(p => p.Id == input.Id, p => p.TracedHash, tx.Hash);
-                        Console.WriteLine($"Inputs Coin {coin.Id} 已修改");
+                        if (showDetails)
+                        {
+                            Console.WriteLine($"Inputs Coin {coin.Id} 已修改");
+                        }
 
                         //修改地址的Coin状态及交易记录
                         var address = MongoDB<Address>.FirstOrDefault(p => p.Id == coin.Address);
@@ -352,7 +392,10 @@ namespace MongoDB
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.Transactions, address.Append(tx));
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.Coins, address.Coins);
                             MongoDB<Address>.UpdateItem(p => p.Id == coin.Address, p => p.LastTimeStamp, block.Timestamp);
-                            Console.WriteLine($"Inputs Address {address.Id} 已修改");
+                            if (showDetails)
+                            {
+                                Console.WriteLine($"Inputs Address {address.Id} 已修改");
+                            }
                         }
                     }
                 }
