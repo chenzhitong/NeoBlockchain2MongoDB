@@ -50,6 +50,21 @@ namespace MongoDB
             }
         }
 
+        public static JToken GetAssetState(string hash)
+        {
+            string json;
+            try
+            {
+                json = HttpPost(neo_cli,
+                    $"{{'jsonrpc': '2.0', 'method': 'getassetstate', 'params': [{hash}], 'id': 1}}");
+                return JObject.Parse(json)["result"];
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public static int GetBlockCount()
         {
             Console.Write("正在获取节点区块数量 ");

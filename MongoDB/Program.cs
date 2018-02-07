@@ -193,37 +193,19 @@ namespace MongoDB
                 else if (tx.Type == TransactionType.RegisterTransaction)
                 {
                     var asset = (tx as RegisterTransaction).Asset;
-                    asset.Id = tx.Hash;
+                    InsertAsset(block, tx, asset);
+                }
+                else if (tx.Type == TransactionType.InvocationTransaction)
+                {
+                    //判断是否是通过智能合约注册的全局资产，如果是的话要记录在Asset集合中
                     try
                     {
-                        MongoDB<Asset>.Insert(asset);
-                        Console.WriteLine($"RegisterTransaction Asset {asset.Id} 已创建");
+                        var asset = Asset.FromJson(Tools.GetAssetState(tx.Hash));
+                        InsertAsset(block, tx, asset);
                     }
-                    catch (Exception) { Console.WriteLine($"Asset {asset.Id} 已存在"); }
-
-                    //修改地址的资产余额及交易记录
-                    //在注册资产的交易中，涉及的地址不只是在Inputs和Outputs中，还有Admin字段
-                    var address = MongoDB<Address>.FirstOrDefault(p => p.Id == asset.Admin);
-                    if (address == null)
+                    catch (Exception)
                     {
-                        address = new Address()
-                        {
-                            Id = asset.Admin,
-                            FirstTimeStamp = block.Timestamp,
-                            LastTimeStamp = block.Timestamp,
-                        };
-                        address.Append(tx);
-                        try
-                        {
-                            MongoDB<Address>.Insert(address);
-                            Console.WriteLine($"RegisterTransaction Address {address.Id} 已创建");
-                        }
-                        catch (Exception) { Console.WriteLine($"Address {address} 已存在"); }
-                    }
-                    else
-                    {
-                        MongoDB<Address>.UpdateItem(p => p.Id == asset.Admin, p => p.Transactions, address.Append(tx));
-                        MongoDB<Address>.UpdateItem(p => p.Id == asset.Admin, p => p.LastTimeStamp, block.Timestamp);
+                        //不是注册资产的智能合约
                     }
                 }
                 //修改资产的发行列表，修改资产管理员的交易列表
@@ -399,6 +381,41 @@ namespace MongoDB
                         }
                     }
                 }
+            }
+        }
+
+        static void InsertAsset(Block block, Transaction tx, Asset asset)
+        {
+            try
+            {
+                MongoDB<Asset>.Insert(asset);
+                Console.WriteLine($"InvocationTransaction Asset {asset.Id} 已创建");
+            }
+            catch (Exception) { Console.WriteLine($"Asset {asset.Id} 已存在"); }
+
+            //修改地址的资产余额及交易记录
+            //在注册资产的交易中，涉及的地址不只是在Inputs和Outputs中，还有Admin字段
+            var address = MongoDB<Address>.FirstOrDefault(p => p.Id == asset.Admin);
+            if (address == null)
+            {
+                address = new Address()
+                {
+                    Id = asset.Admin,
+                    FirstTimeStamp = block.Timestamp,
+                    LastTimeStamp = block.Timestamp,
+                };
+                address.Append(tx);
+                try
+                {
+                    MongoDB<Address>.Insert(address);
+                    Console.WriteLine($"RegisterTransaction Address {address.Id} 已创建");
+                }
+                catch (Exception) { Console.WriteLine($"Address {address} 已存在"); }
+            }
+            else
+            {
+                MongoDB<Address>.UpdateItem(p => p.Id == asset.Admin, p => p.Transactions, address.Append(tx));
+                MongoDB<Address>.UpdateItem(p => p.Id == asset.Admin, p => p.LastTimeStamp, block.Timestamp);
             }
         }
     }
