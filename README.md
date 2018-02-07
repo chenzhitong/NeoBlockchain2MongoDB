@@ -1,4 +1,3 @@
-
 # NeoBlockchain2MongoDB
 
 简介：
@@ -20,19 +19,25 @@
 截图：
 
 Address
+记录所有地址，每个地址的交易（Transactions），每个地址的余额（Coins）
 ![Address](Sreenshot/Address.png)
 
 Asset
+记录所有资产，每个资产的名称、总量、精度、所有者、管理员、交易列表等信息
 ![Asset](Sreenshot/Asset.png)
 
 Block
+记录所有区块的区块头以及交易 ID
 ![Block](Sreenshot/Block.png)
 
 Coin
+记录所有 Coin，以及每一枚 Coin 资产 ID，资产名，数量，状态，来源和去向等信息
 ![Coin](Sreenshot/Coin.png)
 
 MinerTransaction
+记录所有 MinerTransaction，将 MinerTransaction 单独存储，以加快 Transaction 集合处理速度
 ![MinerTransaction](Sreenshot/MinerTransaction.png)
 
 Transaction
+记录所有 Transaction，每个交易的详细信息，详细的交易输出以及交易输出
 ![Transaction](Sreenshot/Transaction.png)
