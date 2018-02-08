@@ -31,7 +31,14 @@ namespace MongoDB
                 var command = input.Split(' ')[0];
                 if (command == "sync")
                 {
-                    Sync();
+                    if(input.Split(' ').Length > 1)
+                    {
+                        Sync(Convert.ToUInt32(input.Split(' ')[1]));
+                    }
+                    else
+                    {
+                        Sync();
+                    }
                 }
                 if (command == "fix")
                 {
@@ -91,17 +98,21 @@ namespace MongoDB
                 }
             }
         }
-
-        /// <summary>
-        /// 同步区块
-        /// </summary>
         static void Sync()
         {
             var blockCount = MongoDB<Block>.Count();
             //从已同步的前一个区块开始同步，避免程序强行关闭导致数据存储不全。
             blockCount = blockCount > 0 ? blockCount - 1 : blockCount;
+            Sync(blockCount);
+        }
+
+        /// <summary>
+        /// 同步区块
+        /// </summary>
+        static void Sync(uint start)
+        {
             var end = Tools.GetBlockIndex();
-            for (uint i = blockCount; i < end; i++)
+            for (uint i = start; i < end; i++)
             {
 #if !DEBUG
                 try { Insert(i, false); } catch (Exception e) { Console.WriteLine(e); Console.ReadLine(); };
@@ -386,6 +397,7 @@ namespace MongoDB
 
         static void InsertAsset(Block block, Transaction tx, Asset asset)
         {
+            asset.Id = tx.Hash;
             try
             {
                 MongoDB<Asset>.Insert(asset);
