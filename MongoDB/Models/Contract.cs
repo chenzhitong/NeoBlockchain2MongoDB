@@ -23,9 +23,9 @@ namespace MongoDB.Models
         {
             var result = new Contract()
             {
-                Hash = (string)json["hash"],
-                Script = (string)json["script"],
-                Returntype = (string)json["returntype"],
+                Hash = (string)json["code"]["hash"],
+                Script = (string)json["code"]["script"],
+                Returntype = (string)json["code"]["returntype"],
                 NeedStorage = (string)json["needstorage"],
                 Name = (string)json["name"],
                 Version = (string)json["version"],
@@ -33,7 +33,7 @@ namespace MongoDB.Models
                 Email = (string)json["email"],
                 Description = (string)json["description"]
             };
-            foreach (var item in json["parameters"])
+            foreach (var item in json["code"]["parameters"])
             {
                 result.Parameters.Add(Parameter.FromJson(item));
             }
