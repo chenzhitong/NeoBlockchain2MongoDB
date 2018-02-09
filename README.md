@@ -20,6 +20,12 @@
 
 截图来自 MongoDB 自带的可视化管理工具 MongoDB Compass Community 
 
+截图截止到区块高度 1038735（区块数为1038736）
+
+集合
+
+![Address](Sreenshot/neo.png)
+
 Address
 记录所有地址，每个地址的交易（Transactions），每个地址的余额（Coins）
 ![Address](Sreenshot/Address.png)
