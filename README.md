@@ -14,8 +14,6 @@
 
 4、运行 NeoBlockchain2MongoDB 程序
 
-注：本程序在 2017 年 7 月时可以稳定工作，之后进行了少量更新，但未经完整测试，不确定是否与最新版的 neo-cli 兼容。
-
 ## 截图：
 
 截图来自 MongoDB 自带的可视化管理工具 MongoDB Compass Community 
