@@ -4,6 +4,8 @@
 
 该程序可以将 NeoBlockchain 中的数据转到 MongoDB 中，本程序可以当做区块链浏览器的入库程序。
 
+支持通过智能合约注册的资产的显示，暂不支持NEP-5资产的显示。
+
 ## 使用方法：
 
 1、安装 MongoDB [下载链接](https://www.mongodb.com/download-center#community) [使用说明](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/)
