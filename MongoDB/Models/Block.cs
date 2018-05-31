@@ -1,17 +1,11 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MongoDB.Models
 {
     public class Block
     {
-        [BsonId]
         public string Hash;
 
         public int Size;
@@ -36,13 +30,10 @@ namespace MongoDB.Models
 
         public int TxCount;
 
-        [BsonIgnore]
         public Witness Script;
 
-        [BsonIgnore]
         public int Confirmations;
 
-        [BsonIgnore]
         public List<Transaction> Transactions = new List<Transaction>();
 
         public static Block FromJson(JToken json)

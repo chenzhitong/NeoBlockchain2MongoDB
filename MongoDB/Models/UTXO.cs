@@ -1,7 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
-
-namespace MongoDB.Models
+﻿namespace MongoDB.Models
 {
     public class UTXO
     {

@@ -1,17 +1,12 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MongoDB.Models
 {
     public class Transaction
     {
-        [BsonId]
         public string Hash;
 
         public int Size;
@@ -19,14 +14,11 @@ namespace MongoDB.Models
         public TransactionType Type;
 
         public byte Version;
-
-        [BsonIgnoreIfNull]
+        
         public List<TransactionAttribute> Attributes;
-
-        [BsonIgnoreIfNull]
+        
         public List<CoinReference> Inputs;
-
-        [BsonIgnoreIfNull]
+        
         public List<TransactionOutput> Outputs;
 
         public long SystemFee;
@@ -39,7 +31,6 @@ namespace MongoDB.Models
 
         public int Timestamp;
 
-        [BsonIgnore]
         public List<Witness> Scripts = new List<Witness>();
 
         public static Transaction FromJson(JToken json)
