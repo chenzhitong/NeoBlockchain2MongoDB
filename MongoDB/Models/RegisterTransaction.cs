@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MongoDB.Models
+namespace ShenZhen.Models
 {
     public class RegisterTransaction : Transaction
     {

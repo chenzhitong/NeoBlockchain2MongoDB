@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7726D785-7CEA-4B55-B825-4C35CB2BE1F5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MongoDB</RootNamespace>
-    <AssemblyName>MongoDB</AssemblyName>
+    <RootNamespace>ShenZhen</RootNamespace>
+    <AssemblyName>ShenZhen</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

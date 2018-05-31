@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Models
+﻿namespace ShenZhen.Models
 {
     /// <summary>
     /// 表示交易特性的用途

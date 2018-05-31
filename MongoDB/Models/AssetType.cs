@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Models
+﻿namespace ShenZhen.Models
 {
     public enum AssetType : byte
     {

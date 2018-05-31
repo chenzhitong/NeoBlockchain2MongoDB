@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace MongoDB.Models
+namespace ShenZhen.Models
 {
     public class Contract
     {

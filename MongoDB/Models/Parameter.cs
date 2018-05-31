@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace MongoDB.Models
+namespace ShenZhen.Models
 {
     public class Parameter
     {

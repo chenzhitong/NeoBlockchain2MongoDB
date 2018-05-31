@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MongoDB.Models
+namespace ShenZhen.Models
 {
     public class Block
     {
