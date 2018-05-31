@@ -10,7 +10,7 @@ namespace MongoDB.Models
 {
     public class TransactionOutput
     {
-        public string Index;
+        public int Index;
 
         public string AssetId;
 
@@ -20,7 +20,7 @@ namespace MongoDB.Models
 
         public static TransactionOutput FromJson(JToken json) => new TransactionOutput()
         {
-            Index = (string)json["n"],
+            Index = (int)json["n"],
             AssetId = (string)json["asset"],
             Value = (double)json["value"],
             Address = (string)json["address"]
